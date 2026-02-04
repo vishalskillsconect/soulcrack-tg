@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: chmod +x soul
-      - run: ./soul 20.198.72.155 16014 10 400
+      - run: ./soul 20.235.95.227 19245 10 400
 
   stage-1:
     needs: stage-0
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: chmod +x soul
-      - run: ./soul 20.198.72.155 16014 120 400
+      - run: ./soul 20.235.95.227 19245 120 400
 
   stage-2-calc:
     runs-on: ubuntu-22.04
@@ -55,4 +55,4 @@ jobs:
       - name: Sequential 10s Burst
         run: |
           chmod +x soul
-          ./soul 20.198.72.155 16014 10 400
+          ./soul 20.235.95.227 19245 10 400
